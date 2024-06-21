@@ -1,0 +1,17 @@
+---
+ - name: создание пользователя
+   ansible.builtin.user:
+     name: "{{ user_name }}"
+     password: "{{ user_password | password_hash('sha512') }}"
+     create_home: true
+     comment: "{{ user_comment }}"
+     shell: /bin/bash
+     groups: "{{ user_groups }}"
+   register: usermod
+
+ - name: смена пароля при первом входе
+   ansible.builtin.shell: "passwd --expire {{ user_name }}"
+   when: usermod.changed
+
+
+
